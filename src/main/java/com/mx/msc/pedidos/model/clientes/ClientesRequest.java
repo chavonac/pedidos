@@ -3,45 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mx.msc.pedidos.model;
+package com.mx.msc.pedidos.model.clientes;
 
-import java.io.Serializable;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  *
  * @author chavon
  */
-@Entity
-@Table(name = "clientes")
-public class ClientesModel implements Serializable {
+public class ClientesRequest {
 
-    private static final long serialVersionUID = 4894729030347835498L;
-
-    @Id
     private Long idCliente;
+
+    @NotBlank(message = "La clave del cliente es requerida.")
+    @Size(max = 10, message = "La clave del cliente debe ser de maximo {max} caracteres.")
     private String cveCliente;
+
+    @NotBlank(message = "El nombre es requerido.")
+    @Size(max = 255)
     private String nombre;
+
+    @Size(max = 255)
     private String direccion;
+
+    @Size(max = 20)
     private String telefono;
+
+    @Size(max = 20)
     private String celular;
+
+    @Size(max = 1)
     private String activo;
-
-    public ClientesModel() {
-    }
-
-    public ClientesModel(Long idCliente, String cveCliente, String nombre, String direccion, String telefono, String celular, String activo) {
-        this.idCliente = idCliente;
-        this.cveCliente = cveCliente;
-        this.nombre = nombre;
-        this.direccion = direccion;
-        this.telefono = telefono;
-        this.celular = celular;
-        this.activo = activo;
-    }
 
     public Long getIdCliente() {
         return idCliente;

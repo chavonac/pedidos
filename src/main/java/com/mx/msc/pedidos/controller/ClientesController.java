@@ -5,11 +5,12 @@
  */
 package com.mx.msc.pedidos.controller;
 
-import com.mx.msc.pedidos.model.ClientesModel;
-import com.mx.msc.pedidos.model.ClientesRequest;
-import com.mx.msc.pedidos.model.ClientesResponse;
-import com.mx.msc.pedidos.repository.ClientesRepository;
+import com.mx.msc.pedidos.model.clientes.ClientesModel;
+import com.mx.msc.pedidos.model.clientes.ClientesRequest;
+import com.mx.msc.pedidos.model.clientes.ClientesResponse;
+import com.mx.msc.pedidos.repository.clientes.ClientesRepository;
 import java.util.List;
+import java.util.Optional;
 import javax.validation.Valid;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -36,6 +39,12 @@ public class ClientesController {
     @GetMapping("/clientes")
     public List<ClientesModel> getAllClientes() {
         return clientesRepository.findAll();
+    }
+
+    @GetMapping("/getClienteById")
+    @ResponseBody
+    public Optional<ClientesModel> getClienteById(@RequestParam Long idCliente) {
+        return clientesRepository.findById(idCliente);
     }
 
     @PostMapping("/clientes")

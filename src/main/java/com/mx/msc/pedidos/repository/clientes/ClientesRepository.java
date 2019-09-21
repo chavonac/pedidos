@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mx.msc.pedidos.repository;
+package com.mx.msc.pedidos.repository.clientes;
 
-import com.mx.msc.pedidos.model.ClientesModel;
+import com.mx.msc.pedidos.model.clientes.ClientesModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

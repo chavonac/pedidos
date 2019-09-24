@@ -14,13 +14,14 @@ import java.util.Optional;
 import javax.validation.Valid;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,10 +44,10 @@ public class ClientesController {
         return clientesRepository.findAll();
     }
 
-    @GetMapping("/getClienteById")
+    @GetMapping("/clientes/{id}")
     @ResponseBody
-    public Optional<ClientesModel> getClienteById(@RequestParam Long idCliente) {
-        return clientesRepository.findById(idCliente);
+    public ClientesModel getClienteById(@PathVariable(value = "id") Long idCliente) throws Exception {
+        return clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente));
     }
 
     @PostMapping("/clientes")
@@ -63,16 +64,19 @@ public class ClientesController {
         return clientesResponse;
     }
 
-    @PutMapping("/clientes")
-    public ClientesResponse getActualizaCliente(@PathVariable Long idCliente, @PathVariable String direccion) throws Exception {
-        ClientesModel cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("Employee not found for this id :: " + idCliente));
-
+    @PutMapping("/clientes/{id}")
+    public ClientesResponse getActualizaCliente(@PathVariable(value = "id") Long idCliente, @RequestBody String direccion) throws Exception {
+        ClientesModel cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro el cliente con el id :: " + idCliente));
         cliente.setDireccion(direccion);
-
         ClientesModel updatedCliente = clientesRepository.save(cliente);
-
         ClientesResponse clientesResponse = mapper.map(updatedCliente, ClientesResponse.class);
-
         return clientesResponse;
+    }
+
+    @DeleteMapping("/clientes/{id}")
+    public ResponseEntity<?> deleteNote(@PathVariable(value = "id") Long idCliente) throws Exception {
+        ClientesModel cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente));
+        clientesRepository.delete(cliente);
+        return ResponseEntity.ok().build();
     }
 }

@@ -15,7 +15,9 @@ import javax.validation.Valid;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,4 +63,16 @@ public class ClientesController {
         return clientesResponse;
     }
 
+    @PutMapping("/clientes")
+    public ClientesResponse getActualizaCliente(@PathVariable Long idCliente, @PathVariable String direccion) throws Exception {
+        ClientesModel cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("Employee not found for this id :: " + idCliente));
+
+        cliente.setDireccion(direccion);
+
+        ClientesModel updatedCliente = clientesRepository.save(cliente);
+
+        ClientesResponse clientesResponse = mapper.map(updatedCliente, ClientesResponse.class);
+
+        return clientesResponse;
+    }
 }

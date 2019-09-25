@@ -10,7 +10,10 @@ import com.mx.msc.pedidos.model.clientes.ClientesRequest;
 import com.mx.msc.pedidos.model.clientes.ClientesResponse;
 import com.mx.msc.pedidos.repository.clientes.ClientesRepository;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.validation.Valid;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +42,9 @@ public class ClientesController {
     @Autowired
     Mapper mapper;
 
+    @PersistenceContext
+    private EntityManager em;
+
     @GetMapping("/clientes")
     public List<ClientesModel> getAllClientes() {
         return clientesRepository.findAll();
@@ -48,6 +54,13 @@ public class ClientesController {
     @ResponseBody
     public ClientesModel getClienteById(@PathVariable(value = "id") Long idCliente) throws Exception {
         return clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente));
+    }
+
+    @GetMapping("/clientesByClave/{cveCliente}")
+    public void findAll(@PathVariable(value = "cveCliente") String cveCliente) {
+        Query query = em.createNativeQuery("SELECT id_cliente, cve_cliente, nombre FROM clientes WHERE cve_cliente = :cveCliente");
+        query.setParameter("cveCliente", cveCliente);
+        List<Object[]> results = query.getResultList();
     }
 
     @PostMapping("/clientes")

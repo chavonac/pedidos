@@ -6,6 +6,7 @@
 package com.mx.msc.pedidos.model.clientes;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,14 +22,28 @@ import javax.persistence.Table;
 @Table(name = "clientes")
 public class ClientesModel implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY )
+    @Column(name = "id_cliente")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idCliente;
+
+    @Column(name = "cve_cliente")
     private String cveCliente;
+
+    @Column(name = "nombre")
     private String nombre;
+
+    @Column(name = "direccion")
     private String direccion;
+
+    @Column(name = "telefono")
     private String telefono;
+
+    @Column(name = "celular")
     private String celular;
+
+    @Column(name = "activo")
     private String activo;
 
     public ClientesModel() {

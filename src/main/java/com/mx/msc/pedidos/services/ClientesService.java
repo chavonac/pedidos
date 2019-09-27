@@ -6,6 +6,7 @@
 package com.mx.msc.pedidos.services;
 
 import com.mx.msc.pedidos.entidades.Clientes;
+import com.mx.msc.pedidos.model.clientes.ClientesRequest;
 import com.mx.msc.pedidos.repository.ClientesRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +44,24 @@ public class ClientesService {
             }
             return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         });
+    }
+
+    public Clientes insertaCliente(Clientes clientes) {
+        return clientesRepository.save(clientes);
+    }
+
+    public Clientes actualizaCliente(Clientes cliente, ClientesRequest clientesRequest) {
+        cliente.setCveCliente(clientesRequest.getCveCliente());
+        cliente.setNombre(clientesRequest.getNombre());
+        cliente.setDireccion(clientesRequest.getDireccion());
+        cliente.setTelefono(clientesRequest.getTelefono());
+        cliente.setCelular(clientesRequest.getCelular());
+        cliente.setActivo(clientesRequest.getActivo());
+        return clientesRepository.save(cliente);
+    }
+
+    public void eliminaCliente(Long idCliente) throws Exception {
+        clientesRepository.delete(clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente)));
     }
 
 }

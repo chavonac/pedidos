@@ -64,40 +64,25 @@ public class ClientesController {
     }
 
     @GetMapping("/clientesByFilter")
-    public ResponseEntity<List<Clientes>> findClienteByFilter(
-            @RequestParam(value = "cveCliente") String cveCliente,
-            @RequestParam(value = "nombre") String nombre,
-            @RequestParam(value = "activo") String activo
-    ) {
+    public ResponseEntity<List<Clientes>> findClienteByFilter(@RequestParam(value = "cveCliente") String cveCliente, @RequestParam(value = "nombre") String nombre, @RequestParam(value = "activo") String activo) {
         return new ResponseEntity<>(clientesService.filtraClientes(cveCliente, nombre, activo), HttpStatus.OK);
     }
 
     @PostMapping("/clientes")
-    public ClientesResponse crearCliente(@RequestBody @Valid ClientesRequest clientesRequest) {
-        Clientes clientes = mapper.map(clientesRequest, Clientes.class);
-        Clientes updatedCliente = clientesRepository.save(clientes);
-        ClientesResponse clientesResponse = mapper.map(updatedCliente, ClientesResponse.class);
-        return clientesResponse;
+    public ClientesResponse insertaCliente(@RequestBody @Valid ClientesRequest clientesRequest) {
+        return mapper.map(clientesService.insertaCliente(mapper.map(clientesRequest, Clientes.class)), ClientesResponse.class);
     }
 
     @PutMapping("/clientes/{id}")
-    public ClientesResponse getActualizaCliente(@PathVariable(value = "id") Long idCliente, @RequestBody @Valid ClientesRequest clientesRequest) throws Exception {
+    public ClientesResponse actualizaCliente(@PathVariable(value = "id") Long idCliente, @RequestBody @Valid ClientesRequest clientesRequest) throws Exception {
         Clientes cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro el cliente con el id :: " + idCliente));
-        cliente.setCveCliente(clientesRequest.getCveCliente());
-        cliente.setNombre(clientesRequest.getNombre());
-        cliente.setDireccion(clientesRequest.getDireccion());
-        cliente.setTelefono(clientesRequest.getTelefono());
-        cliente.setCelular(clientesRequest.getCelular());
-        cliente.setActivo(clientesRequest.getActivo());
-        Clientes updatedCliente = clientesRepository.save(cliente);
-        ClientesResponse clientesResponse = mapper.map(updatedCliente, ClientesResponse.class);
-        return clientesResponse;
+        cliente = clientesService.actualizaCliente(cliente, clientesRequest);
+        return mapper.map(cliente, ClientesResponse.class);
     }
 
     @DeleteMapping("/clientes/{id}")
-    public ResponseEntity<?> deleteNote(@PathVariable(value = "id") Long idCliente) throws Exception {
-        Clientes cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente));
-        clientesRepository.delete(cliente);
+    public ResponseEntity<?> eliminaCliente(@PathVariable(value = "id") Long idCliente) throws Exception {
+        clientesService.eliminaCliente(idCliente);
         return ResponseEntity.ok().build();
     }
 }

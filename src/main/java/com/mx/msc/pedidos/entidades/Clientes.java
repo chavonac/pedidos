@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mx.msc.pedidos.model.clientes;
+package com.mx.msc.pedidos.entidades;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "clientes")
-public class ClientesModel implements Serializable {
+public class Clientes implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,10 +46,10 @@ public class ClientesModel implements Serializable {
     @Column(name = "activo")
     private String activo;
 
-    public ClientesModel() {
+    public Clientes() {
     }
 
-    public ClientesModel(Long idCliente, String cveCliente, String nombre, String direccion, String telefono, String celular, String activo) {
+    public Clientes(Long idCliente, String cveCliente, String nombre, String direccion, String telefono, String celular, String activo) {
         this.idCliente = idCliente;
         this.cveCliente = cveCliente;
         this.nombre = nombre;

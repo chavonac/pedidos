@@ -60,7 +60,7 @@ public class ClientesService {
         return clientesRepository.save(cliente);
     }
 
-    public void eliminaCliente(Long idCliente) throws Exception {
+    public void eliminaCliente(Integer idCliente) throws Exception {
         clientesRepository.delete(clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente)));
     }
 

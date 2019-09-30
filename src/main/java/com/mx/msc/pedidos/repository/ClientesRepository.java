@@ -15,7 +15,7 @@ import org.springframework.data.jpa.repository.Query;
  *
  * @author chavon
  */
-public interface ClientesRepository extends JpaRepository<Clientes, Long>, JpaSpecificationExecutor<Clientes>{
+public interface ClientesRepository extends JpaRepository<Clientes, Integer>, JpaSpecificationExecutor<Clientes>{
 
     @Query("SELECT t FROM Clientes t WHERE t.cveCliente = :cveCliente")
     List<Clientes> clienteByClave(String cveCliente);

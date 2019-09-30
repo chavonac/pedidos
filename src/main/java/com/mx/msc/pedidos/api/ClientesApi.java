@@ -6,9 +6,10 @@
 *https://www.baeldung.com/spring-request-param
 *https://javadeveloperzone.com/spring/spring-jpa-dynamic-query-example/
  */
-package com.mx.msc.pedidos.controller;
+package com.mx.msc.pedidos.api;
 
 import com.mx.msc.pedidos.entidades.Clientes;
+import com.mx.msc.pedidos.model.ResponseApi;
 import com.mx.msc.pedidos.model.clientes.ClientesRequest;
 import com.mx.msc.pedidos.model.clientes.ClientesResponse;
 import com.mx.msc.pedidos.repository.ClientesRepository;
@@ -17,8 +18,6 @@ import java.util.List;
 import javax.validation.Valid;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
-public class ClientesController {
+public class ClientesApi {
 
     @Autowired
     ClientesRepository clientesRepository;
@@ -45,44 +44,52 @@ public class ClientesController {
     Mapper mapper;
 
     @Autowired
+    private ResponseApi responseApi;
+
+    @Autowired
     private ClientesService clientesService;
 
     @GetMapping("/clientes")
-    public List<Clientes> getAllClientes() {
-        return clientesRepository.findAll();
+    public ResponseApi getAllClientes() {
+        return responseApi.convierte(clientesRepository.findAll());
     }
 
     @GetMapping("/clientes/{id}")
     @ResponseBody
-    public Clientes getClienteById(@PathVariable(value = "id") Long idCliente) throws Exception {
-        return clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente));
+    public ResponseApi getClienteById(@PathVariable(value = "id") Integer idCliente) throws Exception {
+        Clientes cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro ningun Cliente con el id ::" + idCliente));
+        return responseApi.convierte(cliente);
     }
 
     @GetMapping("/clientesByClave/{cveCliente}")
-    public ResponseEntity<List<Clientes>> findClienteByCveCliente(@PathVariable(value = "cveCliente") String cveCliente) {
-        return new ResponseEntity<>(clientesService.getClienteByCve(cveCliente), HttpStatus.OK);
+    public ResponseApi findClienteByCveCliente(@PathVariable(value = "cveCliente") String cveCliente) {
+        List<Clientes> clientes = clientesService.getClienteByCve(cveCliente);
+        return responseApi.convierte(clientes);
     }
 
     @GetMapping("/clientesByFilter")
-    public ResponseEntity<List<Clientes>> findClienteByFilter(@RequestParam(value = "cveCliente") String cveCliente, @RequestParam(value = "nombre") String nombre, @RequestParam(value = "activo") String activo) {
-        return new ResponseEntity<>(clientesService.filtraClientes(cveCliente, nombre, activo), HttpStatus.OK);
+    public ResponseApi findClienteByFilter(@RequestParam(value = "cveCliente") String cveCliente, @RequestParam(value = "nombre") String nombre, @RequestParam(value = "activo") String activo) {
+        List<Clientes> clientes = clientesService.filtraClientes(cveCliente, nombre, activo);
+        return responseApi.convierte(clientes);
     }
 
     @PostMapping("/clientes")
-    public ClientesResponse insertaCliente(@RequestBody @Valid ClientesRequest clientesRequest) {
-        return mapper.map(clientesService.insertaCliente(mapper.map(clientesRequest, Clientes.class)), ClientesResponse.class);
+    public ResponseApi insertaCliente(@RequestBody @Valid ClientesRequest clientesRequest) {
+        ClientesResponse cliente = mapper.map(clientesService.insertaCliente(mapper.map(clientesRequest, Clientes.class)), ClientesResponse.class);
+        return responseApi.convierte(cliente);
     }
 
     @PutMapping("/clientes/{id}")
-    public ClientesResponse actualizaCliente(@PathVariable(value = "id") Long idCliente, @RequestBody @Valid ClientesRequest clientesRequest) throws Exception {
+    public ResponseApi actualizaCliente(@PathVariable(value = "id") Integer idCliente, @RequestBody @Valid ClientesRequest clientesRequest) throws Exception {
+
         Clientes cliente = clientesRepository.findById(idCliente).orElseThrow(() -> new Exception("No se encontro el cliente con el id :: " + idCliente));
         cliente = clientesService.actualizaCliente(cliente, clientesRequest);
-        return mapper.map(cliente, ClientesResponse.class);
+        return responseApi.convierte(mapper.map(cliente, ClientesResponse.class));
     }
 
     @DeleteMapping("/clientes/{id}")
-    public ResponseEntity<?> eliminaCliente(@PathVariable(value = "id") Long idCliente) throws Exception {
+    public ResponseApi eliminaCliente(@PathVariable(value = "id") Integer idCliente) throws Exception {
         clientesService.eliminaCliente(idCliente);
-        return ResponseEntity.ok().build();
+        return responseApi.convierte(null);
     }
 }

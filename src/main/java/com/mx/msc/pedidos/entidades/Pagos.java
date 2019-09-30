@@ -6,7 +6,9 @@
 package com.mx.msc.pedidos.entidades;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,90 +16,107 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author checo
+ * @author chavon
  */
 @Entity
 @Table(name = "pagos")
+@XmlRootElement
+@NamedQueries({
+    @NamedQuery(name = "Pagos.findAll", query = "SELECT p FROM Pagos p"),
+    @NamedQuery(name = "Pagos.findByIdPago", query = "SELECT p FROM Pagos p WHERE p.idPago = :idPago"),
+    @NamedQuery(name = "Pagos.findByAdeudo", query = "SELECT p FROM Pagos p WHERE p.adeudo = :adeudo"),
+    @NamedQuery(name = "Pagos.findByAbono", query = "SELECT p FROM Pagos p WHERE p.abono = :abono"),
+    @NamedQuery(name = "Pagos.findByInsoluto", query = "SELECT p FROM Pagos p WHERE p.insoluto = :insoluto"),
+    @NamedQuery(name = "Pagos.findByFecha", query = "SELECT p FROM Pagos p WHERE p.fecha = :fecha"),
+    @NamedQuery(name = "Pagos.findByNotas", query = "SELECT p FROM Pagos p WHERE p.notas = :notas")})
 public class Pagos implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
     @Id
-    @Column(name="id_pago")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idPago;
-    
-    @Column(name="id_pedido")
-    private Long idPedido;
-    
-    @Column(name="adeudo")
-    private float adeudo;
-    
-    @Column(name="abono")
-    private float abono;
-    
-    @Column(name="insoluto")
-    private float insoluto;
-    
-    @Column(name="fecha")
+    @Basic(optional = false)
+    @Column(name = "id_pago")
+    private Integer idPago;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "adeudo")
+    private BigDecimal adeudo;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "abono")
+    private BigDecimal abono;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "insoluto")
+    private BigDecimal insoluto;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "fecha")
+    @Temporal(TemporalType.DATE)
     private Date fecha;
-    
-    @Column(name="notas")
+    @Size(max = 255)
+    @Column(name = "notas")
     private String notas;
-    
-    public Pagos(){}
+    @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
+    @ManyToOne(optional = false)
+    private Pedidos idPedido;
 
-    public Pagos(Long idPago, Long idPedido, float adeudo, float abono, float insoluto, Date fecha, String notas) {
+    public Pagos() {
+    }
+
+    public Pagos(Integer idPago) {
         this.idPago = idPago;
-        this.idPedido = idPedido;
+    }
+
+    public Pagos(Integer idPago, BigDecimal adeudo, BigDecimal abono, BigDecimal insoluto, Date fecha) {
+        this.idPago = idPago;
         this.adeudo = adeudo;
         this.abono = abono;
         this.insoluto = insoluto;
         this.fecha = fecha;
-        this.notas = notas;
     }
 
-    public Long getIdPago() {
+    public Integer getIdPago() {
         return idPago;
     }
 
-    public void setIdPago(Long idPago) {
+    public void setIdPago(Integer idPago) {
         this.idPago = idPago;
     }
 
-    public Long getIdPedido() {
-        return idPedido;
-    }
-
-    public void setIdPedido(Long idPedido) {
-        this.idPedido = idPedido;
-    }
-
-    public float getAdeudo() {
+    public BigDecimal getAdeudo() {
         return adeudo;
     }
 
-    public void setAdeudo(float adeudo) {
+    public void setAdeudo(BigDecimal adeudo) {
         this.adeudo = adeudo;
     }
 
-    public float getAbono() {
+    public BigDecimal getAbono() {
         return abono;
     }
 
-    public void setAbono(float abono) {
+    public void setAbono(BigDecimal abono) {
         this.abono = abono;
     }
 
-    public float getInsoluto() {
+    public BigDecimal getInsoluto() {
         return insoluto;
     }
 
-    public void setInsoluto(float insoluto) {
+    public void setInsoluto(BigDecimal insoluto) {
         this.insoluto = insoluto;
     }
 
@@ -116,6 +135,38 @@ public class Pagos implements Serializable {
     public void setNotas(String notas) {
         this.notas = notas;
     }
-    
+
+    public Pedidos getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(Pedidos idPedido) {
+        this.idPedido = idPedido;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idPago != null ? idPago.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Pagos)) {
+            return false;
+        }
+        Pagos other = (Pagos) object;
+        if ((this.idPago == null && other.idPago != null) || (this.idPago != null && !this.idPago.equals(other.idPago))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.mx.msc.pedidos.entidades.Pagos[ idPago=" + idPago + " ]";
+    }
     
 }

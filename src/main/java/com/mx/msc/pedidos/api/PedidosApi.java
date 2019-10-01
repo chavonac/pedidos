@@ -6,15 +6,17 @@
 package com.mx.msc.pedidos.api;
 
 import com.mx.msc.pedidos.entidades.Pedidos;
-import com.mx.msc.pedidos.model.pedidos.PedidosRequest;
+import com.mx.msc.pedidos.model.ResponseApi;
 import com.mx.msc.pedidos.services.PedidosService;
 import java.util.List;
 import javax.validation.Valid;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,11 +33,19 @@ public class PedidosApi {
     @Autowired
     private PedidosService pedidosService;
 
+    @Autowired
+    private ResponseApi responseApi;
+
+    @GetMapping("/pedidos")
+    public ResponseApi getPedidos(@RequestParam(value = "nombreCliente") String nombreCliente) {
+        return responseApi.convierte(pedidosService.getPedidos(nombreCliente));
+    }
+
     @PostMapping("/pedidos")
     public void insertaPedidos(@RequestBody @Valid List<Pedidos> pedidos) {
-        for (Pedidos pedido : pedidos) {
+        pedidos.forEach((pedido) -> {
             pedidosService.procesaPedidos(pedido);
-        }
+        });
 
     }
 

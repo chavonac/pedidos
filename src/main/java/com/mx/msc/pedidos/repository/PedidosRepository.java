@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author chavon
  */
-public interface PedidosRepository extends JpaRepository<Pedidos, Long>{
-
-
+public interface PedidosRepository extends JpaRepository<Pedidos, Integer>{
+  
+    
 }

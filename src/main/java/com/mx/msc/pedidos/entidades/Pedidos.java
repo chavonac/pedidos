@@ -5,6 +5,7 @@
  */
 package com.mx.msc.pedidos.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -12,6 +13,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +24,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -36,6 +40,24 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "pedidos")
 @XmlRootElement
+@SqlResultSetMapping(
+    name="mappingPedidos",
+    classes={
+        @ConstructorResult(
+            targetClass=Pedidos.class,
+            columns={
+                @ColumnResult(name="idPedido"),
+                @ColumnResult(name="periodo"),
+                @ColumnResult(name="cliente"),
+                @ColumnResult(name="telefono"),
+                @ColumnResult(name="direccion"),
+                @ColumnResult(name="celular"),
+                @ColumnResult(name="fecha"),
+                @ColumnResult(name="estatus")
+            }
+        )
+    }
+)
 @NamedQueries({
     @NamedQuery(name = "Pedidos.findAll", query = "SELECT p FROM Pedidos p"),
     @NamedQuery(name = "Pedidos.findByIdPedido", query = "SELECT p FROM Pedidos p WHERE p.idPedido = :idPedido"),
@@ -64,14 +86,18 @@ public class Pedidos implements Serializable {
     @Column(name = "estatus")
     private String estatus;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPedido")
+    @JsonIgnore
     private Collection<PedidosDetalle> pedidosDetalleCollection;
     @JoinColumn(name = "id_periodo", referencedColumnName = "id_periodo")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private Periodos idPeriodo;
     @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private Clientes idCliente;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPedido")
+    @JsonIgnore
     private Collection<Pagos> pagosCollection;
 
     public Pedidos() {

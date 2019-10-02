@@ -7,7 +7,7 @@ package com.mx.msc.pedidos.model.pedidos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mx.msc.pedidos.model.PedidosDetalle.PedidosDetallesRequest;
+import com.mx.msc.pedidos.model.pedidosdetalle.PedidosDetallesRequest;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Temporal;

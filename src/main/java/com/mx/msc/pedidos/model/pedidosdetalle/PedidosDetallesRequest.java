@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mx.msc.pedidos.model.PedidosDetalle;
+package com.mx.msc.pedidos.model.pedidosdetalle;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;

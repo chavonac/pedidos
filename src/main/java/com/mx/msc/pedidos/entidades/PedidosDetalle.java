@@ -5,6 +5,7 @@
  */
 package com.mx.msc.pedidos.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Basic;
@@ -52,6 +53,10 @@ public class PedidosDetalle implements Serializable {
     @Size(min = 1, max = 1)
     @Column(name = "tiene_oferta")
     private String tieneOferta;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "cantidad")
+    private BigDecimal cantidad;
     @JoinColumn(name = "id_pedido", referencedColumnName = "id_pedido")
     @ManyToOne(optional = false)
     private Pedidos idPedido;
@@ -96,6 +101,14 @@ public class PedidosDetalle implements Serializable {
         this.tieneOferta = tieneOferta;
     }
 
+    public BigDecimal getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(BigDecimal cantidad) {
+        this.cantidad = cantidad;
+    }
+
     public Pedidos getIdPedido() {
         return idPedido;
     }
@@ -136,5 +149,5 @@ public class PedidosDetalle implements Serializable {
     public String toString() {
         return "com.mx.msc.pedidos.entidades.PedidosDetalle[ idPedidoDetalle=" + idPedidoDetalle + " ]";
     }
-    
+
 }

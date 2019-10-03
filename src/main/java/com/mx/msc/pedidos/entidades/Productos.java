@@ -5,6 +5,7 @@
  */
 package com.mx.msc.pedidos.entidades;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Collection;
 import javax.persistence.Basic;
@@ -54,6 +55,7 @@ public class Productos implements Serializable {
     @Column(name = "nombre")
     private String nombre;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProducto")
+    @JsonIgnore
     private Collection<PedidosDetalle> pedidosDetalleCollection;
 
     public Productos() {

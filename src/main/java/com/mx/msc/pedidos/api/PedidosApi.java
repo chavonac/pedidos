@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author chavon
  */
 @RestController
-@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST})
 @RequestMapping("/api")
 public class PedidosApi {
 
@@ -40,8 +40,18 @@ public class PedidosApi {
     private ResponseApi responseApi;
 
     @GetMapping("/pedidos")
-    public ResponseApi getPedidos(@RequestParam(value = "nombreCliente") String nombreCliente) {
-        return responseApi.convierte(pedidosService.getPedidos(nombreCliente));
+    public ResponseApi getPedidos() {
+        return responseApi.convierte(pedidosService.getPedidos());
+    }
+
+    @GetMapping("/pedidosById")
+    public ResponseApi getPedidos(@RequestParam(value = "id") Integer id, @RequestParam(value = "tipo") String tipo) {
+        return responseApi.convierte(pedidosService.getPedidosById(id, tipo));
+    }
+
+    @GetMapping("/getPedidosByCliente")
+    public ResponseApi getPedidosByCliente(@RequestParam(value = "nombreCliente") String nombreCliente) {
+        return responseApi.convierte(pedidosService.getPedidosByCliente(nombreCliente));
     }
 
     @PostMapping("/pedidos")
